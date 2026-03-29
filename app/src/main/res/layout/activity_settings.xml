@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/background_dark"
-    tools:context=".SettingsActivity">
+    android:background="#0D0D1A">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/api_key_label"
-        android:textColor="@color/gold"
+        android:text="API ключ Claude"
+        android:textColor="#D4AF37"
         android:textSize="16sp"
         android:textStyle="bold"
         android:paddingBottom="8dp" />
@@ -22,65 +19,57 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/api_key_description"
-        android:textColor="@color/text_secondary"
+        android:text="Для работы приложения необходим API ключ Anthropic Claude.\nПолучить: console.anthropic.com"
+        android:textColor="#8888AA"
         android:textSize="13sp"
         android:paddingBottom="16dp" />
 
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/surface_dark"
-        app:cardCornerRadius="8dp"
+        android:orientation="horizontal"
+        android:background="#1A1A2E"
+        android:padding="8dp"
         android:layout_marginBottom="16dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/et_api_key"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="8dp">
+            android:layout_weight="1"
+            android:hint="sk-ant-..."
+            android:textColor="#E8E8F0"
+            android:textColorHint="#8888AA"
+            android:background="@android:color/transparent"
+            android:padding="8dp"
+            android:inputType="textPassword"
+            android:textSize="13sp" />
 
-            <EditText
-                android:id="@+id/et_api_key"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/api_key_hint"
-                android:textColor="@color/text_primary"
-                android:textColorHint="@color/text_secondary"
-                android:background="@null"
-                android:padding="8dp"
-                android:inputType="textPassword"
-                android:fontFamily="monospace"
-                android:textSize="13sp" />
+        <Button
+            android:id="@+id/btn_toggle_visibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Показать"
+            android:textSize="12sp"
+            android:textColor="#D4AF37"
+            android:background="@android:color/transparent" />
+    </LinearLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_toggle_visibility"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/show"
-                android:textSize="12sp"
-                app:backgroundTint="@color/transparent"
-                android:textColor="@color/gold"
-                app:strokeColor="@color/transparent" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/btn_save"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:text="@string/save"
+        android:text="Сохранить"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:backgroundTint="@color/gold"
-        android:textColor="@color/background_dark" />
+        android:textColor="#0D0D1A"
+        android:background="#D4AF37" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/api_key_note"
-        android:textColor="@color/text_secondary"
+        android:text="Ключ сохраняется только на вашем устройстве."
+        android:textColor="#8888AA"
         android:textSize="12sp"
         android:paddingTop="24dp"
         android:gravity="center" />

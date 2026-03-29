@@ -1,26 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.PalmistryApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorPrimary">@color/gold</item>
-        <item name="colorPrimaryVariant">@color/purple_dark</item>
-        <item name="colorOnPrimary">@color/background_dark</item>
-        <item name="colorSecondary">@color/gold_light</item>
-        <item name="colorOnSecondary">@color/background_dark</item>
-        <item name="android:colorBackground">@color/background_dark</item>
-        <item name="colorSurface">@color/surface_dark</item>
-        <item name="colorOnSurface">@color/text_primary</item>
-        <item name="actionBarStyle">@style/AppActionBar</item>
-        <item name="windowActionBar">true</item>
-        <item name="android:statusBarColor">@color/surface_dark</item>
-        <item name="android:navigationBarColor">@color/background_dark</item>
-    </style>
-
-    <style name="AppActionBar" parent="Widget.MaterialComponents.ActionBar.Solid">
-        <item name="background">@color/surface_dark</item>
-        <item name="titleTextStyle">@style/AppActionBarTitle</item>
-    </style>
-
-    <style name="AppActionBarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textColor">@color/gold</item>
+    <style name="Theme.PalmistryApp" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">#D4AF37</item>
+        <item name="colorPrimaryDark">#0D0D1A</item>
+        <item name="colorAccent">#D4AF37</item>
+        <item name="android:windowBackground">#0D0D1A</item>
+        <item name="android:statusBarColor">#1A1A2E</item>
     </style>
 </resources>
