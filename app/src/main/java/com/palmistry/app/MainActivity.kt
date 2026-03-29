@@ -118,8 +118,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun openCamera() {
         val photoFile = createImageFile()
-        currentPhotoUri = FileProvider.getUriForFile(this, "${packageName}.provider", photoFile)
-        cameraLauncher.launch(currentPhotoUri)
+        val uri = FileProvider.getUriForFile(this, "${packageName}.provider", photoFile)
+        currentPhotoUri = uri
+        cameraLauncher.launch(uri)
     }
 
     private fun openGallery() {
