@@ -10,13 +10,15 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.palmistry.app.databinding.ActivityMainBinding
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -24,26 +26,24 @@ import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
     private lateinit var preferencesManager: PreferencesManager
     private var currentPhotoUri: Uri? = null
     private var selectedBitmap: Bitmap? = null
 
+    private lateinit var ivPalmPreview: ImageView
+    private lateinit var tvHint: TextView
+    private lateinit var tvApiKeyHint: TextView
+    private lateinit var btnAnalyze: Button
+
     private val cameraLauncher = registerForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { success ->
-        if (success) {
-            currentPhotoUri?.let { uri ->
-                loadImageFromUri(uri)
-            }
-        }
+        if (success) currentPhotoUri?.let { loadImageFromUri(it) }
     }
 
     private val galleryLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
-    ) { uri ->
-        uri?.let { loadImageFromUri(it) }
-    }
+    ) { uri -> uri?.let { loadImageFromUri(it) } }
 
     private val cameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -61,15 +61,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
         preferencesManager = PreferencesManager(this)
 
-        binding.btnCamera.setOnClickListener { checkCameraPermission() }
-        binding.btnGallery.setOnClickListener { checkGalleryPermission() }
-        binding.btnAnalyze.setOnClickListener { startAnalysis() }
-        binding.btnSettings.setOnClickListener {
+        ivPalmPreview = findViewById(R.id.iv_palm_preview)
+        tvHint = findViewById(R.id.tv_hint)
+        tvApiKeyHint = findViewById(R.id.tv_api_key_hint)
+        btnAnalyze = findViewById(R.id.btn_analyze)
+
+        findViewById<Button>(R.id.btn_camera).setOnClickListener { checkCameraPermission() }
+        findViewById<Button>(R.id.btn_gallery).setOnClickListener { checkGalleryPermission() }
+        btnAnalyze.setOnClickListener { startAnalysis() }
+        findViewById<Button>(R.id.btn_settings).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
@@ -105,7 +109,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             Manifest.permission.READ_EXTERNAL_STORAGE
         }
-
         when {
             ContextCompat.checkSelfPermission(this, permission)
                     == PackageManager.PERMISSION_GRANTED -> openGallery()
@@ -115,11 +118,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun openCamera() {
         val photoFile = createImageFile()
-        currentPhotoUri = FileProvider.getUriForFile(
-            this,
-            "${packageName}.provider",
-            photoFile
-        )
+        currentPhotoUri = FileProvider.getUriForFile(this, "${packageName}.provider", photoFile)
         cameraLauncher.launch(currentPhotoUri)
     }
 
@@ -139,8 +138,8 @@ class MainActivity : AppCompatActivity() {
             val bitmap = BitmapFactory.decodeStream(inputStream)
             inputStream?.close()
             selectedBitmap = bitmap
-            binding.ivPalmPreview.setImageBitmap(bitmap)
-            binding.tvHint.text = getString(R.string.photo_selected)
+            ivPalmPreview.setImageBitmap(bitmap)
+            tvHint.text = getString(R.string.photo_selected)
             updateAnalyzeButton()
         } catch (e: Exception) {
             Toast.makeText(this, R.string.image_load_error, Toast.LENGTH_SHORT).show()
@@ -148,12 +147,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateAnalyzeButton() {
-        binding.btnAnalyze.isEnabled = selectedBitmap != null && preferencesManager.hasApiKey()
-        if (!preferencesManager.hasApiKey()) {
-            binding.tvApiKeyHint.text = getString(R.string.api_key_required)
-        } else {
-            binding.tvApiKeyHint.text = ""
-        }
+        btnAnalyze.isEnabled = selectedBitmap != null && preferencesManager.hasApiKey()
+        tvApiKeyHint.text = if (!preferencesManager.hasApiKey()) {
+            getString(R.string.api_key_required)
+        } else ""
     }
 
     private fun startAnalysis() {
@@ -163,10 +160,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SettingsActivity::class.java))
             return
         }
-
-        val intent = Intent(this, AnalysisActivity::class.java)
-        // Pass bitmap via a static holder to avoid intent size limits
         BitmapHolder.bitmap = bitmap
-        startActivity(intent)
+        startActivity(Intent(this, AnalysisActivity::class.java))
     }
 }

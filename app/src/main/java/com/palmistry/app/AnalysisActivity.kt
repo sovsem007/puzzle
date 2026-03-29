@@ -2,28 +2,36 @@ package com.palmistry.app
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.ScrollView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.palmistry.app.databinding.ActivityAnalysisBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AnalysisActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityAnalysisBinding
     private lateinit var preferencesManager: PreferencesManager
+    private lateinit var progressBar: ProgressBar
+    private lateinit var tvStatusMessage: TextView
+    private lateinit var tvAnalysisResult: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAnalysisBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_analysis)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.analysis_title)
 
         preferencesManager = PreferencesManager(this)
+
+        progressBar = findViewById(R.id.progress_bar)
+        tvStatusMessage = findViewById(R.id.tv_status_message)
+        tvAnalysisResult = findViewById(R.id.tv_analysis_result)
 
         val bitmap = BitmapHolder.bitmap
         if (bitmap == null) {
@@ -32,7 +40,7 @@ class AnalysisActivity : AppCompatActivity() {
             return
         }
 
-        binding.ivPalmAnalysis.setImageBitmap(bitmap)
+        findViewById<ImageView>(R.id.iv_palm_analysis).setImageBitmap(bitmap)
         startAnalysis(bitmap)
     }
 
@@ -47,10 +55,10 @@ class AnalysisActivity : AppCompatActivity() {
     }
 
     private fun startAnalysis(bitmap: android.graphics.Bitmap) {
-        binding.progressBar.visibility = View.VISIBLE
-        binding.tvAnalysisResult.visibility = View.GONE
-        binding.tvStatusMessage.text = getString(R.string.analyzing)
-        binding.tvStatusMessage.visibility = View.VISIBLE
+        progressBar.visibility = View.VISIBLE
+        tvAnalysisResult.visibility = View.GONE
+        tvStatusMessage.text = getString(R.string.analyzing)
+        tvStatusMessage.visibility = View.VISIBLE
 
         lifecycleScope.launch {
             try {
@@ -58,16 +66,16 @@ class AnalysisActivity : AppCompatActivity() {
                     val service = ClaudeApiService(preferencesManager.apiKey)
                     service.analyzePalm(bitmap)
                 }
-                binding.progressBar.visibility = View.GONE
-                binding.tvStatusMessage.visibility = View.GONE
-                binding.tvAnalysisResult.text = result
-                binding.tvAnalysisResult.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
+                tvStatusMessage.visibility = View.GONE
+                tvAnalysisResult.text = result
+                tvAnalysisResult.visibility = View.VISIBLE
             } catch (e: Exception) {
-                binding.progressBar.visibility = View.GONE
-                binding.tvStatusMessage.visibility = View.GONE
+                progressBar.visibility = View.GONE
+                tvStatusMessage.visibility = View.GONE
                 val errorMsg = getString(R.string.analysis_error, e.message ?: "Unknown error")
-                binding.tvAnalysisResult.text = errorMsg
-                binding.tvAnalysisResult.visibility = View.VISIBLE
+                tvAnalysisResult.text = errorMsg
+                tvAnalysisResult.visibility = View.VISIBLE
                 Toast.makeText(this@AnalysisActivity, errorMsg, Toast.LENGTH_LONG).show()
             }
         }

@@ -2,43 +2,47 @@ package com.palmistry.app
 
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.palmistry.app.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivitySettingsBinding
     private lateinit var preferencesManager: PreferencesManager
+    private lateinit var etApiKey: EditText
+    private lateinit var btnToggleVisibility: Button
     private var isPasswordVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_settings)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.settings_title)
 
         preferencesManager = PreferencesManager(this)
 
-        binding.etApiKey.setText(preferencesManager.apiKey)
-        binding.etApiKey.transformationMethod = PasswordTransformationMethod.getInstance()
+        etApiKey = findViewById(R.id.et_api_key)
+        btnToggleVisibility = findViewById(R.id.btn_toggle_visibility)
 
-        binding.btnToggleVisibility.setOnClickListener {
+        etApiKey.setText(preferencesManager.apiKey)
+        etApiKey.transformationMethod = PasswordTransformationMethod.getInstance()
+
+        btnToggleVisibility.setOnClickListener {
             isPasswordVisible = !isPasswordVisible
             if (isPasswordVisible) {
-                binding.etApiKey.transformationMethod = null
-                binding.btnToggleVisibility.text = getString(R.string.hide)
+                etApiKey.transformationMethod = null
+                btnToggleVisibility.text = getString(R.string.hide)
             } else {
-                binding.etApiKey.transformationMethod = PasswordTransformationMethod.getInstance()
-                binding.btnToggleVisibility.text = getString(R.string.show)
+                etApiKey.transformationMethod = PasswordTransformationMethod.getInstance()
+                btnToggleVisibility.text = getString(R.string.show)
             }
-            binding.etApiKey.setSelection(binding.etApiKey.text?.length ?: 0)
+            etApiKey.setSelection(etApiKey.text?.length ?: 0)
         }
 
-        binding.btnSave.setOnClickListener {
-            val apiKey = binding.etApiKey.text?.toString()?.trim() ?: ""
+        findViewById<Button>(R.id.btn_save).setOnClickListener {
+            val apiKey = etApiKey.text?.toString()?.trim() ?: ""
             if (apiKey.isBlank()) {
                 Toast.makeText(this, R.string.api_key_empty_error, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
